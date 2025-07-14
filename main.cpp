@@ -8,6 +8,7 @@ void showMenu() {
     std::cout << "\n==== Record Management System ====\n";
     std::cout << "1. Add book\n";
     std::cout << "2. List all books\n";
+    std::cout << "3. Search book by ID\n";
     std::cout << "0. Exit\n";
     std::cout << "Choice: ";
 }
@@ -57,7 +58,24 @@ int main() {
                 }
                 break;
         }
-        case 0: //
+        case 3: {
+                int id;
+                std::cout << "Enter ID to search: ";
+                std::cin >> id;
+
+                auto result = repo.findById(id);
+                if (result) {
+                    const Book& b = *result;
+                    std::cout << "Found: " << b.getId() << " | "
+                              << b.getTitle() << " | "
+                              << b.getAuthor() << " | "
+                              << b.getYear() << '\n';
+                } else {
+                    std::cout << "No book with ID " << id << ".\n";
+                }
+                break;
+        }
+        case 0:
             std::cout << "Good-bye!\n";
             break;
         default:
