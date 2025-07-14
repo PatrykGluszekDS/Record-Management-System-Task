@@ -1,5 +1,7 @@
 #include "BookRepository.hpp"
 #include <fstream>
+#include <filesystem>
+#include <algorithm>
 #include <optional>
 
 void BookRepository::save(const Book& book) {
@@ -34,4 +36,38 @@ std::optional<Book> BookRepository::findById(int id) const {
             return b;
     }
     return std::nullopt;                // not found
+}
+
+
+/* ───────────── helper: overwrite whole file ───────────── */
+void BookRepository::writeAll(const std::vector<Book>& books) const {
+    std::ofstream ofs(filename_, std::ios::trunc);     // overwrite
+    if (!ofs) throw std::runtime_error("Cannot open " + filename_ + " for writing");
+    for (const auto& b : books) ofs << b.toCsv() << '\n';
+}
+
+/* ───────────── update ───────────── */
+bool BookRepository::update(const Book& updated) {
+    auto books = loadAll();
+    bool found = false;
+    for (auto& b : books) {
+        if (b.getId() == updated.getId()) {
+            b = updated;
+            found = true;
+            break;
+        }
+    }
+    if (found) writeAll(books);
+    return found;
+}
+
+/* ───────────── delete ───────────── */
+bool BookRepository::removeById(int id) {
+    auto books = loadAll();
+    auto it = std::remove_if(books.begin(), books.end(),
+                             [id](const Book& b){ return b.getId() == id; });
+    if (it == books.end()) return false;        // nothing removed
+    books.erase(it, books.end());
+    writeAll(books);
+    return true;
 }

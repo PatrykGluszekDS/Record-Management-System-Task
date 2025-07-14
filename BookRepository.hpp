@@ -6,14 +6,18 @@
 
 class BookRepository {
 private:
-    std::string filename_;            // e.g. "books.csv"
+    std::string filename_;
+
+    void writeAll(const std::vector<Book>& books) const;   // helper
 
 public:
     explicit BookRepository(std::string filename = "books.csv")
         : filename_(std::move(filename)) {}
 
-    void save(const Book& book);              // append one book
-    std::vector<Book> loadAll() const;        // read entire file
-
+    void save(const Book& book);
+    std::vector<Book> loadAll() const;
     std::optional<Book> findById(int id) const;
+
+    bool update(const Book& updated);   // returns true on success
+    bool removeById(int id);            // returns true on success
 };

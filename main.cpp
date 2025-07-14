@@ -9,6 +9,8 @@ void showMenu() {
     std::cout << "1. Add book\n";
     std::cout << "2. List all books\n";
     std::cout << "3. Search book by ID\n";
+    std::cout << "4. Update book by ID\n";
+    std::cout << "5. Delete book by ID\n";
     std::cout << "0. Exit\n";
     std::cout << "Choice: ";
 }
@@ -73,6 +75,52 @@ int main() {
                 } else {
                     std::cout << "No book with ID " << id << ".\n";
                 }
+                break;
+        }
+            /* ─────────────── case 4 – UPDATE ─────────────── */
+        case 4: {
+                int id;
+                std::cout << "Enter ID to update: ";
+                std::cin >> id;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                auto existing = repo.findById(id);
+                if (!existing) {
+                    std::cout << "No book with ID " << id << ".\n";
+                    break;
+                }
+
+                Book b = *existing;
+                std::string input;
+
+                std::cout << "Current title [" << b.getTitle() << "]: ";
+                std::getline(std::cin, input);
+                if (!input.empty()) b.setTitle(input);
+
+                std::cout << "Current author [" << b.getAuthor() << "]: ";
+                std::getline(std::cin, input);
+                if (!input.empty()) b.setAuthor(input);
+
+                std::cout << "Current year [" << b.getYear() << "]: ";
+                std::getline(std::cin, input);
+                if (!input.empty()) b.setYear(std::stoi(input));
+
+                if (repo.update(b))
+                    std::cout << "Book updated.\n";
+                else
+                    std::cout << "Update failed (unexpected).\n";
+                break;
+        }
+            /* ─────────────── case 5 – DELETE ─────────────── */
+        case 5: {
+                int id;
+                std::cout << "Enter ID to delete: ";
+                std::cin >> id;
+
+                if (repo.removeById(id))
+                    std::cout << "Book deleted.\n";
+                else
+                    std::cout << "No book with ID " << id << ".\n";
                 break;
         }
         case 0:
