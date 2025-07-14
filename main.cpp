@@ -11,6 +11,9 @@ void showMenu() {
     std::cout << "3. Search book by ID\n";
     std::cout << "4. Update book by ID\n";
     std::cout << "5. Delete book by ID\n";
+    std::cout << "6. List books sorted by ID\n";
+    std::cout << "7. List books sorted by title\n";
+    std::cout << "8. Export CSV snapshot\n";
     std::cout << "0. Exit\n";
     std::cout << "Choice: ";
 }
@@ -121,6 +124,34 @@ int main() {
                     std::cout << "Book deleted.\n";
                 else
                     std::cout << "No book with ID " << id << ".\n";
+                break;
+        }
+            /* ─────────────── case 6 – SORT BY ID ─────────────── */
+        case 6: {
+                auto books = repo.loadAllSortedById(true);
+                if (books.empty()) { std::cout << "No records.\n"; break; }
+                for (const auto& b : books)
+                    std::cout << b.getId() << " | " << b.getTitle()
+                              << " | " << b.getAuthor() << " | " << b.getYear() << '\n';
+                break;
+        }
+            /* ─────────────── case 7 – SORT BY TITLE ─────────────── */
+        case 7: {
+                auto books = repo.loadAllSortedByTitle(true);
+                if (books.empty()) { std::cout << "No records.\n"; break; }
+                for (const auto& b : books)
+                    std::cout << b.getId() << " | " << b.getTitle()
+                              << " | " << b.getAuthor() << " | " << b.getYear() << '\n';
+                break;
+        }
+        case 8: {
+                std::string dest;
+                std::cout << "Destination filename (e.g., export.csv): ";
+                std::cin  >> dest;
+                if (repo.exportCopy(dest))
+                    std::cout << "Exported to " << dest << '\n';
+                else
+                    std::cout << "Export failed.\n";
                 break;
         }
         case 0:

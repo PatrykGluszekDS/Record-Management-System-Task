@@ -71,3 +71,30 @@ bool BookRepository::removeById(int id) {
     writeAll(books);
     return true;
 }
+
+
+std::vector<Book> BookRepository::loadAllSortedById(bool asc) const {
+    auto v = loadAll();
+    std::sort(v.begin(), v.end(), [asc](const Book& a, const Book& b) {
+        return asc ? a.getId() < b.getId()
+                   : a.getId() > b.getId();
+    });
+    return v;
+}
+
+std::vector<Book> BookRepository::loadAllSortedByTitle(bool asc) const {
+    auto v = loadAll();
+    std::sort(v.begin(), v.end(), [asc](const Book& a, const Book& b) {
+        return asc ? a.getTitle() < b.getTitle()
+                   : a.getTitle() > b.getTitle();
+    });
+    return v;
+}
+
+bool BookRepository::exportCopy(const std::string& dest) const {
+    namespace fs = std::filesystem;
+    std::error_code ec;
+    fs::copy_file(filename_, dest,
+                  fs::copy_options::overwrite_existing, ec);
+    return !ec;
+}
