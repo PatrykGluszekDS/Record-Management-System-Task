@@ -2,6 +2,7 @@
 #include <vector>
 #include <limits>
 #include "Book.hpp"
+#include "BookRepository.hpp"
 
 void showMenu() {
     std::cout << "\n==== Record Management System ====\n";
@@ -12,7 +13,7 @@ void showMenu() {
 }
 
 int main() {
-    std::vector<Book> books;   // in-memory list for now
+    BookRepository repo;                       // defaults to "books.csv"
     int choice;
 
     do {
@@ -31,17 +32,28 @@ int main() {
                 std::cout << "Author: "; std::getline(std::cin, author);
                 std::cout << "Year: ";   std::cin >> year;
 
-                books.emplace_back(id, title, author, year);
-                std::cout << "Book added!\n";
+                Book newBook(id, title, author, year);
+                try {
+                    repo.save(newBook);                 // ← write to CSV
+                    std::cout << "Book saved!\n";
+                } catch (const std::exception& ex) {
+                    std::cerr << "Error: " << ex.what() << '\n';
+                }
                 break;
+
         }
         case 2: {
-                std::cout << "\n--- All books ---\n";
-                for (const auto& b : books) {
-                    std::cout << b.getId()   << " | "
-                              << b.getTitle() << " | "
-                              << b.getAuthor()<< " | "
-                              << b.getYear()  << '\n';
+                auto books = repo.loadAll();            // ← read CSV
+                if (books.empty()) {
+                    std::cout << "No records yet.\n";
+                } else {
+                    std::cout << "\n--- All books ---\n";
+                    for (const auto& b : books) {
+                        std::cout << b.getId()    << " | "
+                                  << b.getTitle() << " | "
+                                  << b.getAuthor()<< " | "
+                                  << b.getYear()  << '\n';
+                    }
                 }
                 break;
         }
