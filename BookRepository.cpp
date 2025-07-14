@@ -9,7 +9,7 @@ void BookRepository::save(const Book& book) {
 
 std::vector<Book> BookRepository::loadAll() const {
     std::ifstream ifs(filename_);
-    if (!ifs) return {};                          // no file yet = empty list
+    if (!ifs) return {};                          // no file yet = empty list //
 
     std::vector<Book> books;
     std::string line;

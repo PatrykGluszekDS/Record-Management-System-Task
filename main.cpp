@@ -57,7 +57,7 @@ int main() {
                 }
                 break;
         }
-        case 0:
+        case 0: //
             std::cout << "Good-bye!\n";
             break;
         default:
