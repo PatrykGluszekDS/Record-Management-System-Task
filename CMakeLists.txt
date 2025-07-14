@@ -3,4 +3,6 @@ project(Internship)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Internship main.cpp)
+add_executable(Internship main.cpp
+        Book.cpp
+        Book.hpp)
